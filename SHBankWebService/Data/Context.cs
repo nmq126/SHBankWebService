@@ -12,9 +12,9 @@ namespace SHBankWebService.Data
         public Context() : base("name=SHBWebService")
         {
         }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<TransactionHistory> TransactionHistories { get; set; }
 
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<TransactionHistory> TransactionHistory { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -11,11 +11,12 @@ namespace SHBankWebService
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
     public class Service1 : IService1
     {
-        private Context db;
+        private Context db = new Context();
+
         public bool Deposit(string token, double amount)
         {
             var existAccount = CheckToken(token);
-            if (existAccount == null || amount <=0)
+            if (existAccount == null || amount <= 0)
             {
                 return false;
             }
@@ -34,7 +35,7 @@ namespace SHBankWebService
                         Status = 1,
                         CreatedAt = DateTime.Now
                     };
-                    db.TransactionHistories.Add(transactionHistory);
+                    db.TransactionHistory.Add(transactionHistory);
                     db.SaveChanges();
                     transaction.Commit();
                     return true;
@@ -63,7 +64,7 @@ namespace SHBankWebService
         {
             var senderAccount = CheckToken(token);
             var receiverAccount = CheckValidAccount(receiverAccountNumber);
-            if (senderAccount == receiverAccount || senderAccount == null || receiverAccount == null || amount <=0 || amount > senderAccount.Balance)
+            if (senderAccount == receiverAccount || senderAccount == null || receiverAccount == null || amount <= 0 || amount > senderAccount.Balance)
             {
                 return false;
             }
@@ -75,8 +76,10 @@ namespace SHBankWebService
                     receiverAccount.Balance += amount;
                     db.Accounts.AddOrUpdate(senderAccount);
                     db.Accounts.AddOrUpdate(receiverAccount);
+                    db.SaveChanges();
                     TransactionHistory transactionHistory = new TransactionHistory()
                     {
+                        Id = Guid.NewGuid().ToString(),
                         Type = 3,
                         Amount = amount,
                         SenderAccountNumber = senderAccount.AccountNumber,
@@ -84,8 +87,8 @@ namespace SHBankWebService
                         Status = 1,
                         CreatedAt = DateTime.Now
                     };
-                    db.TransactionHistories.Add(transactionHistory);
-                    db.SaveChanges();
+                    db.TransactionHistory.AddOrUpdate(transactionHistory);
+                    db.SaveChangesAsync();
                     transaction.Commit();
                     return true;
                 }
@@ -96,6 +99,7 @@ namespace SHBankWebService
                 }
             }
         }
+
         public bool Withdraw(string token, double amount)
         {
             var existAccount = CheckToken(token);
@@ -118,7 +122,7 @@ namespace SHBankWebService
                         Status = 1,
                         CreatedAt = DateTime.Now
                     };
-                    db.TransactionHistories.Add(transactionHistory);
+                    db.TransactionHistory.Add(transactionHistory);
                     db.SaveChanges();
                     transaction.Commit();
                     return true;
@@ -130,6 +134,7 @@ namespace SHBankWebService
                 }
             }
         }
+
         public Account CheckValidAccount(string accountNumber)
         {
             var existAccount = db.Accounts.Find(accountNumber);
@@ -139,6 +144,7 @@ namespace SHBankWebService
             }
             return existAccount;
         }
+
         public Account CheckToken(string token)
         {
             var account = db.Accounts.Where(a => a.Token == token).First();
@@ -159,7 +165,7 @@ namespace SHBankWebService
             {
                 return null;
             }
-            List<TransactionHistory> transactionHistories = (List<TransactionHistory>)db.TransactionHistories.Where(t =>
+            List<TransactionHistory> transactionHistories = (List<TransactionHistory>)db.TransactionHistory.Where(t =>
             (t.SenderAccountNumber == existAccount.AccountNumber) &&
             (t.ReceiverAccountNumber == existAccount.AccountNumber));
             return transactionHistories;

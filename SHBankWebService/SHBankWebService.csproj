@@ -78,9 +78,13 @@
   <ItemGroup>
     <Compile Include="Account.cs" />
     <Compile Include="Data\Context.cs" />
-    <Compile Include="Migrations\202204281135389_InitDatabase.cs" />
-    <Compile Include="Migrations\202204281135389_InitDatabase.designer.cs">
-      <DependentUpon>202204281135389_InitDatabase.cs</DependentUpon>
+    <Compile Include="Migrations\202204291410559_innit.cs" />
+    <Compile Include="Migrations\202204291410559_innit.designer.cs">
+      <DependentUpon>202204291410559_innit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204291453412_init_again.cs" />
+    <Compile Include="Migrations\202204291453412_init_again.designer.cs">
+      <DependentUpon>202204291453412_init_again.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Service1.svc.cs">
@@ -103,8 +107,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202204281135389_InitDatabase.resx">
-      <DependentUpon>202204281135389_InitDatabase.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204291410559_innit.resx">
+      <DependentUpon>202204291410559_innit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204291453412_init_again.resx">
+      <DependentUpon>202204291453412_init_again.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

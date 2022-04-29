@@ -7,13 +7,13 @@ namespace SHBankWebService.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class InitDatabase : IMigrationMetadata
+    public sealed partial class init_again : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitDatabase));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init_again));
         
         string IMigrationMetadata.Id
         {
-            get { return "202204281135389_InitDatabase"; }
+            get { return "202204291453412_init_again"; }
         }
         
         string IMigrationMetadata.Source

@@ -12,32 +12,39 @@ namespace SHBankWebService
     [ServiceContract]
     public interface IService1
     {
-
         [OperationContract]
         string Login(string accountNumber, string code);
 
         [OperationContract]
         bool Transfer(string token, string receiverAccountNumber, double amount);
-        [OperationContract]
 
+        [OperationContract]
         bool Deposit(string token, double amount);
+
         [OperationContract]
         bool Withdraw(string token, double amount);
+
         [OperationContract]
         List<TransactionHistory> FindTransactionHistoriesByToken(string token);
+
+        [OperationContract]
         Account CheckValidAccount(string accountNumber);
+
+        [OperationContract]
         Account CheckToken(string token);
+
+        [OperationContract]
         string CreateToken(string accountNumber);
+
         // TODO: Add your service operations here
     }
-
 
     // Use a data contract as illustrated in the sample below to add composite types to service operations.
     [DataContract]
     public class CompositeType
     {
-        bool boolValue = true;
-        string stringValue = "Hello ";
+        private bool boolValue = true;
+        private string stringValue = "Hello ";
 
         [DataMember]
         public bool BoolValue
