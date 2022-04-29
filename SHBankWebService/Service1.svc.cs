@@ -26,6 +26,7 @@ namespace SHBankWebService
                 {
                     existAccount.Balance += amount;
                     db.Accounts.AddOrUpdate(existAccount);
+                    db.SaveChanges();
                     TransactionHistory transactionHistory = new TransactionHistory()
                     {
                         Type = 2,
@@ -113,6 +114,7 @@ namespace SHBankWebService
                 {
                     existAccount.Balance -= amount;
                     db.Accounts.AddOrUpdate(existAccount);
+                    db.SaveChanges();
                     TransactionHistory transactionHistory = new TransactionHistory()
                     {
                         Type = 1,
@@ -123,7 +125,7 @@ namespace SHBankWebService
                         CreatedAt = DateTime.Now
                     };
                     db.TransactionHistory.Add(transactionHistory);
-                    db.SaveChanges();
+                    db.SaveChangesAsync();
                     transaction.Commit();
                     return true;
                 }
@@ -165,10 +167,11 @@ namespace SHBankWebService
             {
                 return null;
             }
-            List<TransactionHistory> transactionHistories = (List<TransactionHistory>)db.TransactionHistory.Where(t =>
+            var transactionHistory = db.TransactionHistory.AsQueryable();
+            transactionHistory = db.TransactionHistory.Where(t =>
             (t.SenderAccountNumber == existAccount.AccountNumber) &&
             (t.ReceiverAccountNumber == existAccount.AccountNumber));
-            return transactionHistories;
+            return transactionHistory.ToList();
         }
     }
 }
