@@ -17,13 +17,16 @@ namespace SHBankWebService
         string Login(string accountNumber, string code);
 
         [OperationContract]
-        bool Transfer(string senderToken, string receiverAccountNumber, double amount);
+        bool Transfer(string token, string receiverAccountNumber, double amount);
         [OperationContract]
 
         bool Deposit(string token, double amount);
         [OperationContract]
         bool Withdraw(string token, double amount);
-        Account CheckValidAccount(string token);
+        [OperationContract]
+        List<TransactionHistory> FindTransactionHistoriesByToken(string token);
+        Account CheckValidAccount(string accountNumber);
+        Account CheckToken(string token);
         string CreateToken(string accountNumber);
         // TODO: Add your service operations here
     }

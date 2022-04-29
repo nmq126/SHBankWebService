@@ -1,5 +1,6 @@
 ﻿using SHBankWebService.Data;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace SHBankWebService
         private Context db;
         public bool Deposit(string token, double amount)
         {
-            var existAccount = CheckValidAccount(token);
+            var existAccount = CheckToken(token);
             if (existAccount == null || amount <=0)
             {
                 return false;
@@ -58,10 +59,10 @@ namespace SHBankWebService
             return existAccount.Token;
         }
 
-        public bool Transfer(string senderToken, string receiverAccountNumber, double amount)
+        public bool Transfer(string token, string receiverAccountNumber, double amount)
         {
-            var senderAccount = CheckValidAccount(senderToken);
-            var receiverAccount = db.Accounts.Find(receiverAccountNumber);
+            var senderAccount = CheckToken(token);
+            var receiverAccount = CheckValidAccount(receiverAccountNumber);
             if (senderAccount == receiverAccount || senderAccount == null || receiverAccount == null || amount <=0 || amount > senderAccount.Balance)
             {
                 return false;
@@ -97,7 +98,7 @@ namespace SHBankWebService
         }
         public bool Withdraw(string token, double amount)
         {
-            var existAccount = CheckValidAccount(token);
+            var existAccount = CheckToken(token);
             if (existAccount == null || amount <= 0 || amount > existAccount.Balance)
             {
                 return false;
@@ -129,9 +130,8 @@ namespace SHBankWebService
                 }
             }
         }
-        public Account CheckValidAccount(string token)
+        public Account CheckValidAccount(string accountNumber)
         {
-            var accountNumber = db.Accounts.Where(a => a.Token == token).First();
             var existAccount = db.Accounts.Find(accountNumber);
             if (existAccount == null || existAccount.Status == -1)
             {
@@ -139,12 +139,30 @@ namespace SHBankWebService
             }
             return existAccount;
         }
+        public Account CheckToken(string token)
+        {
+            var account = db.Accounts.Where(a => a.Token == token).First();
+            return account;
+        }
 
         public string CreateToken(string accountNumber)
         {
             string random = Guid.NewGuid().ToString();
             string token = accountNumber + random;
             return token;
+        }
+
+        public List<TransactionHistory> FindTransactionHistoriesByToken(string token)
+        {
+            var existAccount = CheckToken(token);
+            if (existAccount == null)
+            {
+                return null;
+            }
+            List<TransactionHistory> transactionHistories = (List<TransactionHistory>)db.TransactionHistories.Where(t =>
+            (t.SenderAccountNumber == existAccount.AccountNumber) &&
+            (t.ReceiverAccountNumber == existAccount.AccountNumber));
+            return transactionHistories;
         }
     }
 }
